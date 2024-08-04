@@ -1,12 +1,14 @@
 import express from 'express';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
+import authRoutes from './routes/auth';
 import todoRoutes from './routes/totos';
 
 const app = express();
 
 app.use(json());
 
+app.use('/auth', authRoutes);
 app.use('/todos', todoRoutes);
 
 app.use((_: express.Request, res: express.Response) => {
