@@ -3,6 +3,7 @@ import { json } from 'body-parser';
 import mongoose from 'mongoose';
 import authRoutes from './routes/auth';
 import todoRoutes from './routes/totos';
+import { get404Error } from './controllers/errors';
 
 const app = express();
 
@@ -10,10 +11,7 @@ app.use(json());
 
 app.use('/auth', authRoutes);
 app.use('/todos', todoRoutes);
-
-app.use((_: express.Request, res: express.Response) => {
-  res.status(404).json({ message: 'Not found' });
-});
+app.use(get404Error);
 
 mongoose
   .connect(

@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import constants from '../constants/common';
 
 const todoSchema = new Schema({
   title: {
@@ -11,9 +12,9 @@ const todoSchema = new Schema({
   },
   userId: {
     type: Schema.Types.ObjectId,
-    ref: 'User',
+    ref: constants.USER,
     required: true
   }
 });
 
-export const Todo = model('Todo', todoSchema);
+export const Todo = model(constants.TODO, todoSchema);

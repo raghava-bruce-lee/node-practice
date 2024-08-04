@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import constants from '../constants/common';
 
 const userSchema = new Schema({
   name: {
@@ -16,9 +17,9 @@ const userSchema = new Schema({
   todos: [
     {
       type: Schema.Types.ObjectId,
-      ref: 'Todo'
+      ref: constants.TODO
     }
   ]
 });
 
-export const User = model('User', userSchema);
+export const User = model(constants.USER, userSchema);

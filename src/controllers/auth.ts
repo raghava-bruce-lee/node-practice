@@ -3,7 +3,7 @@ import { validationResult } from 'express-validator';
 import { hash, compare } from 'bcryptjs';
 import { sign as createToken } from 'jsonwebtoken';
 import { User } from '../models/users';
-import { JwtCustomPayload } from '../models/common';
+import { JwtCustomPayload, LoginPayload, SignupPayload } from '../models/common';
 
 export const signup: RequestHandler = async (req, res) => {
   const errors = validationResult(req);
@@ -14,7 +14,7 @@ export const signup: RequestHandler = async (req, res) => {
   }
 
   try {
-    const { name, email, password } = req.body as { name: string; email: string; password: string };
+    const { name, email, password } = req.body as SignupPayload;
     const hashedPassword = await hash(password, 12);
 
     const user = new User({
@@ -39,7 +39,7 @@ export const login: RequestHandler = async (req, res) => {
   }
 
   try {
-    const { email, password } = req.body as { email: string; password: string };
+    const { email, password } = req.body as LoginPayload;
 
     const user = await User.findOne({ email });
     if (user) {
