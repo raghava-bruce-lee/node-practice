@@ -7,7 +7,7 @@ import constants from '../constants/common';
 
 const router = Router();
 
-router.put(
+router.post(
   '/signup',
   [
     body(AUTH_REQUEST.name).trim().notEmpty(),

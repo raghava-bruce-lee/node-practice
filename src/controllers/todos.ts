@@ -21,10 +21,11 @@ export const createTodo: RequestHandler = async (req, res) => {
   }
 
   try {
-    const { title, description } = req.body as TodoPayload;
+    const { title, description, status } = req.body as TodoPayload;
     const todo = new Todo({
       title: title.trim(),
       description: description.trim(),
+      status,
       userId: req.userId
     });
     const user = await User.findById(req.userId);
@@ -49,7 +50,7 @@ export const updateTodo: RequestHandler<{ id: string }> = async (req, res) => {
 
   try {
     const todoId = req.params.id.trim();
-    const { title, description } = req.body as TodoPayload;
+    const { title, description, status } = req.body as TodoPayload;
 
     const todoObj = await Todo.findById(todoId);
     if (!todoObj) {
@@ -58,6 +59,7 @@ export const updateTodo: RequestHandler<{ id: string }> = async (req, res) => {
 
     todoObj.title = title;
     todoObj.description = description;
+    todoObj.status = status;
     await todoObj.save();
 
     res.status(200).json({ message: `Todo with id: ${todoId} has been updated.` });
