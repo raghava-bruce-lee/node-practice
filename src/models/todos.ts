@@ -1,4 +1,5 @@
 import { Schema, model } from 'mongoose';
+import { TODO_STATUS } from '../constants/todos';
 import constants from '../constants/common';
 
 const todoSchema = new Schema({
@@ -9,6 +10,10 @@ const todoSchema = new Schema({
   description: {
     type: String,
     required: true
+  },
+  status: {
+    type: String,
+    default: TODO_STATUS.NOT_STARTED
   },
   userId: {
     type: Schema.Types.ObjectId,
