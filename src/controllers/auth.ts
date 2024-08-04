@@ -3,6 +3,7 @@ import { validationResult } from 'express-validator';
 import { hash, compare } from 'bcryptjs';
 import { sign as createToken } from 'jsonwebtoken';
 import { User } from '../models/users';
+import { JwtCustomPayload } from '../models/common';
 
 export const signup: RequestHandler = async (req, res) => {
   const errors = validationResult(req);
@@ -45,7 +46,7 @@ export const login: RequestHandler = async (req, res) => {
       const isCredentialsMatching = await compare(password, user.password);
       if (isCredentialsMatching) {
         const token = createToken(
-          { userId: user._id.toString() },
+          { userId: user._id.toString() } as JwtCustomPayload,
           `${process.env.JWT_SECRET_KEY}`,
           { expiresIn: '1h' }
         );

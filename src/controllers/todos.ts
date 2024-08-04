@@ -1,6 +1,7 @@
 import { RequestHandler } from 'express';
 import { validationResult } from 'express-validator';
 import { Todo } from '../models/todos';
+import { User } from '../models/users';
 
 export const getTodos: RequestHandler = async (_, res) => {
   try {
@@ -23,10 +24,17 @@ export const createTodo: RequestHandler = async (req, res) => {
     const { title, description } = req.body as { title: string; description: string };
     const todo = new Todo({
       title: title.trim(),
-      description: description.trim()
+      description: description.trim(),
+      userId: req.userId
     });
-    await todo.save();
-    res.status(201).json({ message: 'Created the todo', todo });
+    const user = await User.findById(req.userId);
+
+    if (user) {
+      user.todos.push(todo._id);
+      await Promise.all([todo.save(), user.save()]);
+
+      res.status(201).json({ message: 'Created the todo', todo });
+    }
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -67,9 +75,13 @@ export const deleteTodo: RequestHandler<{ id: string }> = async (req, res) => {
 
   try {
     const todoId = req.params.id.trim();
-    await Todo.findByIdAndDelete(todoId);
+    const user = await User.findById(req.userId);
 
-    res.status(200).json({ message: `Todo with id: ${todoId} has been deleted.` });
+    if (user) {
+      user.todos = user.todos.filter((todo) => todo._id.toString() !== todoId);
+      await Promise.all([Todo.findByIdAndDelete(todoId), user.save()]);
+      res.status(200).json({ message: `Todo with id: ${todoId} has been deleted.` });
+    }
   } catch (error) {
     res.status(500).json({ message: error });
   }
