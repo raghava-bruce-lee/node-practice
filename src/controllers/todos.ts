@@ -7,7 +7,7 @@ import constants from '../constants/common';
 
 export const getTodos: RequestHandler = async (_, res) => {
   try {
-    const todos = await Todo.find();
+    const todos = await Todo.find({}).select('-__v -userId');
     res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ message: error });
