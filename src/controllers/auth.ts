@@ -1,4 +1,4 @@
-import { RequestHandler } from 'express';
+import { RequestHandler, CookieOptions } from 'express';
 import { validationResult } from 'express-validator';
 import { hash, compare } from 'bcryptjs';
 import { sign as createToken } from 'jsonwebtoken';
@@ -51,10 +51,23 @@ export const login: RequestHandler = async (req, res) => {
           { expiresIn: '1h' }
         );
 
-        res.status(200).json({ message: 'Login successful!', token });
+        const options: CookieOptions = {
+          httpOnly: true,
+          sameSite: 'strict',
+          expires: new Date(Date.now() + 1 * 60 * 60 * 1000)
+        };
+
+        res
+          .status(200)
+          .cookie('access_token', token, options)
+          .json({ message: 'Login successful!', token });
       }
     }
   } catch (error) {
     res.status(500).json({ message: error });
   }
+};
+
+export const getLoginStatus: RequestHandler = async (_, res) => {
+  return res.status(200).json({ loginStatus: true });
 };

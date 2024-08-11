@@ -5,9 +5,14 @@ import { User } from '../models/users';
 import { TodoPayload } from '../models/common';
 import constants from '../constants/common';
 
-export const getTodos: RequestHandler = async (_, res) => {
+export const getTodos: RequestHandler = async (req, res) => {
   try {
-    const todos = await Todo.find({}).select('-__v -userId');
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(500).json({ message: constants.UNEXPECTED_ERROR });
+    }
+
+    const todos = (await user.populate('todos')).todos;
     res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ message: error });
