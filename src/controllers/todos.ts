@@ -67,7 +67,7 @@ export const updateTodo: RequestHandler<{ id: string }> = async (req, res) => {
     todoObj.status = status;
     await todoObj.save();
 
-    res.status(200).json({ message: `Todo with id: ${todoId} has been updated.` });
+    res.status(200).json({ message: `Todo with id: ${todoId} has been updated.`, todo: todoObj });
   } catch (error) {
     res.status(500).json({ message: error });
   }

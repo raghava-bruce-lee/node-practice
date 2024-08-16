@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { body } from 'express-validator';
 import { User } from '../models/users';
-import { signup, login, getLoginStatus } from '../controllers/auth';
+import { signup, login, logout, getLoginStatus } from '../controllers/auth';
 import { AUTH_REQUEST } from '../constants/todos';
 import constants from '../constants/common';
 import { isAuth } from '../middlewares/is-auth';
@@ -30,6 +30,8 @@ router.post(
   [body(AUTH_REQUEST.email).isEmail(), body(AUTH_REQUEST.password).trim().isLength({ min: 5 })],
   login
 );
+
+router.post('/logout', isAuth, logout);
 
 router.get('/login-status', isAuth, getLoginStatus);
 
