@@ -57,15 +57,26 @@ export const login: RequestHandler = async (req, res) => {
           expires: new Date(Date.now() + 1 * 60 * 60 * 1000)
         };
 
-        res
+        return res
           .status(200)
           .cookie('access_token', token, options)
           .json({ message: 'Login successful!', token });
       }
+
+      return res.status(401).json({ message: 'Incorrect password!' });
     }
+
+    return res.status(404).json({ message: "User doesn't exist" });
   } catch (error) {
     res.status(500).json({ message: error });
   }
+};
+
+export const logout: RequestHandler = async (_, res) => {
+  return res
+    .clearCookie('access_token', { httpOnly: true, sameSite: 'strict' })
+    .status(200)
+    .json({ message: 'Logged out succesfully' });
 };
 
 export const getLoginStatus: RequestHandler = async (_, res) => {
