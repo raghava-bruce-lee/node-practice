@@ -4,6 +4,7 @@ import { Todo } from '../models/todos';
 import { User } from '../models/users';
 import { TodoPayload } from '../models/common';
 import constants from '../constants/common';
+import omit from 'lodash/omit';
 
 export const getTodos: RequestHandler = async (req, res) => {
   try {
@@ -12,7 +13,12 @@ export const getTodos: RequestHandler = async (req, res) => {
       return res.status(500).json({ message: constants.UNEXPECTED_ERROR });
     }
 
-    const todos = (await user.populate('todos')).todos;
+    const todos = (
+      await user.populate({
+        path: 'todos',
+        select: '-userId'
+      })
+    ).todos;
     res.status(200).json({ todos });
   } catch (error) {
     res.status(500).json({ message: error });
@@ -41,7 +47,7 @@ export const createTodo: RequestHandler = async (req, res) => {
     user.todos.push(todo._id);
     await Promise.all([todo.save(), user.save()]);
 
-    res.status(201).json({ message: 'Created the todo', todo });
+    res.status(201).json({ message: 'Created the todo', todo: omit(todo.toObject(), ['userId']) });
   } catch (error) {
     res.status(500).json({ message: error });
   }
@@ -67,7 +73,12 @@ export const updateTodo: RequestHandler<{ id: string }> = async (req, res) => {
     todoObj.status = status;
     await todoObj.save();
 
-    res.status(200).json({ message: `Todo with id: ${todoId} has been updated.`, todo: todoObj });
+    res
+      .status(200)
+      .json({
+        message: `Todo with id: ${todoId} has been updated.`,
+        todo: omit(todoObj.toObject(), ['userId'])
+      });
   } catch (error) {
     res.status(500).json({ message: error });
   }
