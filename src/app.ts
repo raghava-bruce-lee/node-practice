@@ -9,6 +9,15 @@ const app = express();
 
 app.use(json());
 
+// CORS
+app.use((_, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*'); // allow all domains
+  // res.setHeader('Access-Control-Allow-Methods', 'GET, PUT, DELETE');
+  // res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+
+  next();
+});
+
 app.use('/auth', authRoutes);
 app.use('/todos', todoRoutes);
 app.use(get404Error);
