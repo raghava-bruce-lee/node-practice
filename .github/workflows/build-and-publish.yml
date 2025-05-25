@@ -31,5 +31,4 @@ jobs:
 
       - name: Manually build and push Docker image
         run: |
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/node-practice:latest .
           docker images
