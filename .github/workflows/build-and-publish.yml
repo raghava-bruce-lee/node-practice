@@ -27,7 +27,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           push: true
-          tags: raghavendra1319/node-practice:latest
+          tags: raghavendra1319/node-practice:v1
 
       # - name: Manually build and push Docker image
       #   run: |
