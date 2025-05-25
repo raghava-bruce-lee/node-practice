@@ -32,3 +32,4 @@ jobs:
       - name: Manually build and push Docker image
         run: |
           docker build . -t node-practice:latest
+          docker images
