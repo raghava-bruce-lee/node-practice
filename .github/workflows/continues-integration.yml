@@ -20,4 +20,4 @@ jobs:
       - name: Install Node and it's dependencies
         uses: ./.github/actions/cache-deps
       - name: Run Build
-        run: npm run start
+        run: npm run build
